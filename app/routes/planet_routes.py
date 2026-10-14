@@ -1,12 +1,32 @@
 from flask import Blueprint , abort , make_response, request
-from app.models.planets import planets
+from app.models.planets import Planet
 from ..db import db
 
 planet_bp = Blueprint("planet_bp", __name__, url_prefix="/planets")
 
+@planet_bp.post("")
+def create_new_planet():
+    request_body = request.get_json()
+    name = request_body["name"]
+    description = request_body["description"]
+    has_rings = request_body["has_rings"]
+
+    new_planet = Planet(name=name, description=description, has_rings=has_rings)
+    db.session.add(new_planet)
+    db.session.commit()
+
+    response = dict(
+            id=new_planet.id, 
+            name=new_planet.name, 
+            description=new_planet.description,
+            has_rings=new_planet.has_rings
+        )
+
+    return response, 201
+
 @planet_bp.get("")
 def get_all_planets():
-    query = db.select(planets).order_by(planets.id)
+    query = db.select(Planet).order_by(Planet.id)
     planets = db.session.scalars(query)
 
     planets_response = []
@@ -14,32 +34,16 @@ def get_all_planets():
         planets_response.append(
             {
                 "id": planet.id,
-                "title": planet.title,
-                "description": planet.description
+                "name": planet.name,
+                "description": planet.description,
+                "has_rings": planet.has_rings
             }
         )
-    return planets_response
+    return planets_response, 200
 
 
             
-@planet_bp.post("")
-def get_one_planet(id):
-    try:
-        id = int(id)
-    except ValueError:
-        response = {"message" : f"planet {id} invalid"}
-        abort(make_response(response,400))
-    for planet in planets:
-        if planet.id == id :
-            return dict(
-                        id= planet.id,
-                        name = planet.name,
-                        description  = planet.description,
-                        has_rings = planet.has_rings
-                    )
-    
-    response = {"message" : f"planet {id} not found"}
-    abort(make_response(response,404))
+
 
     
 
