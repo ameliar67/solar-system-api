@@ -26,7 +26,21 @@ def create_new_planet():
 
 @planet_bp.get("")
 def get_all_planets():
-    query = db.select(Planet).order_by(Planet.id)
+    query = db.select(Planet)
+    name = request.args.get("name")
+
+    if name:
+        query = query.where(Planet.name == name)
+
+    description = request.args.get("description")
+    if description:
+        query =  query.where(Planet.description.ilike(f"%{description}%")) 
+
+    has_rings = request.args.get("has_rings")
+    if has_rings:
+        query = query.where(Planet.has_rings == has_rings)     
+
+    
     planets = db.session.scalars(query)
 
     planets_response = []
@@ -89,15 +103,3 @@ def validate_planet(planet_id):
         abort(make_response(response, 404))
 
     return planet
-
-
-            
-
-
-    
-
-
-
-        
-
-
