@@ -7,8 +7,22 @@ class Planet(db.Model):
     description: Mapped[str]
     has_rings: Mapped[bool]
 
-planets = [
-    # Planet(1 , "Mercury" , "It is the smallest planet in the solar system and it is nearest to sun " , has_rings=False),
-    # Planet(2 , "Jupiter" , " its a largest planet in the solar system , it has lot of moons" , has_rings=True),
-    # Planet(3 , "Earth" , "The only place in our solar system have living things" ,has_rings=False)
-]
+
+    def to_dict(self):
+        return dict(
+            id=self.id,
+            name=self.name,
+            description=self.description,
+            has_rings=self.has_rings
+        )
+
+    @classmethod
+    def from_dict(cls,planet_data):
+        new_data = cls(
+            name=planet_data["name"],
+            description=planet_data["description"],
+            has_rings =planet_data["has_rings"]
+
+        )
+        return new_data
+
