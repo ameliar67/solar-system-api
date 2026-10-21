@@ -1,4 +1,6 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
+from sqlalchemy import ForeignKey
 from ..db import db
 
 class Planet(db.Model):
@@ -6,6 +8,7 @@ class Planet(db.Model):
     name: Mapped[str]
     description: Mapped[str]
     has_rings: Mapped[bool]
+    moon: Mapped[list["Moon"]] = relationship(back_populates="planet")
 
 
     def to_dict(self):
@@ -13,7 +16,8 @@ class Planet(db.Model):
             id=self.id,
             name=self.name,
             description=self.description,
-            has_rings=self.has_rings
+            has_rings=self.has_rings,
+            moons=[moon.to_dict() for moon in self.moons]
         )
 
     @classmethod
