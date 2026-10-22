@@ -17,7 +17,8 @@ class Moon(db.Model):
             id=self.id,
             size=self.size,
             description=self.description,
-            craters=self.craters
+            craters=self.craters,
+            planet_id = self.planet_id
         )
 
     @classmethod

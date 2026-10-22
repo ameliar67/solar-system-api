@@ -71,7 +71,7 @@ def delete_planet(planet_id):
 @planet_bp.post("<planet_id>/moons")
 def create_new_moon(planet_id):
 
-    validate_model(Planet, planet_id)
+    planet = validate_model(Planet, planet_id)
     request_body = request.get_json()
 
     try:
@@ -79,7 +79,7 @@ def create_new_moon(planet_id):
     except KeyError as e:
         response = {"message": f"Invalid request: missing {e.args[0]}"}
         abort(make_response(response, 400))
-    new_moon.planet_id = planet_id
+    new_moon.planet_id = planet.id
 
     db.session.add(new_moon)
     db.session.commit()

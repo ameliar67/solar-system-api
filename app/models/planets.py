@@ -8,17 +8,18 @@ class Planet(db.Model):
     name: Mapped[str]
     description: Mapped[str]
     has_rings: Mapped[bool]
-    moons: Mapped[list["Moon"]] = relationship(back_populates="planet")
+    moons: Mapped[Optional[list["Moon"]]] = relationship(back_populates="planet")
 
 
     def to_dict(self):
-        return dict(
-            id=self.id,
-            name=self.name,
-            description=self.description,
-            has_rings=self.has_rings,
-            moons=[moon.to_dict() for moon in self.moons]
-        )
+        planet_as_dict = {}
+        planet_as_dict["id"] = self.id
+        planet_as_dict["name"] = self.name
+        planet_as_dict["description"] = self.description
+        planet_as_dict["has_rings"]=self.has_rings
+        if self.moons:
+            planet_as_dict["moons"]=[moon.to_dict() for moon in self.moons]
+        return planet_as_dict
 
     @classmethod
     def from_dict(cls,planet_data):
