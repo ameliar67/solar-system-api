@@ -6,7 +6,7 @@ from ..db import db
 class Moon(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     planet_id: Mapped[int] = mapped_column(ForeignKey("planet.id"))
-    planet: Mapped["Planet"] = relationship(back_populates="moons")
+    planet: Mapped[Optional["Planet"]] = relationship(back_populates="moons")
     size: Mapped[str]
     description: Mapped[str]
     craters: Mapped[int]
@@ -25,6 +25,6 @@ class Moon(db.Model):
         new_data = cls(
             size=moon_data["size"],
             description=moon_data["description"],
-            craters=moon_data.craters
+            craters=moon_data["craters"]
         )
         return new_data

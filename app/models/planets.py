@@ -8,7 +8,7 @@ class Planet(db.Model):
     name: Mapped[str]
     description: Mapped[str]
     has_rings: Mapped[bool]
-    moon: Mapped[list["Moon"]] = relationship(back_populates="planet")
+    moons: Mapped[list["Moon"]] = relationship(back_populates="planet")
 
 
     def to_dict(self):
